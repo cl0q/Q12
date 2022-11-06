@@ -1,0 +1,24 @@
+Formating:
+
+Citing following the MLA stylesheet
+Paper format: DIN A4
+Line spacing: 1.5 lines
+Font: Times New Roman
+Font Size: 12pt for text, 10pt for Footnotes
+Margin Left: 2.5cm
+Margin Right: 3cm
+
+Page Counting and Page Numeration (you know, how the pages are being counted and stuff):
+
+Numbers are at the bottom middle or bottom left
+Front Page counts as Page 1 but has no Number at the bottom
+Structure counts as Page 2 but has no Number at the bottom aswell
+Everything else has normal Page Numbers
+Last page is Bibliography
+
+Structure:
+Structure has to be written in a unified outline scheme
+
+I need three references written as books, other three can be websites or other secondary literature
+File FRONTPAGE.docx (or FRONTPAGE.pdf) has to be the first page of the document.
+Final result as a .docx or LaTeX document, if possible.
