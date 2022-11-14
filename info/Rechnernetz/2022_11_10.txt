@@ -1,0 +1,52 @@
+Struktur von Rechnernetze
+----------------------------
+
+1. Vermaschtes Netz
+
+<Pentagram mit 5 Eckpunkten, alles miteinander verbunden>
+
+  +  Direkte Übertragung zwischen allen Rechnern möglich
+  -  Viele Kabel
+
+5 Knoten: 4+3+2+1 = 10 Kabel
+10 Knoten: 10+9+8+7+6+5+4+3+2+1 = 45 Kabel
+100 Kabel: 100*99
+           ------ = 4590 
+              2
+... sind im endeffekt zu viele kabel....
+
+
+2. Stern
+----------
+   <STERN>
+    O     O
+    |--O--|
+  O---/|\---O   Die Kommunikation läuft immer über einen zentralen Knoten (Hub/ Switch / Router)
+       O
+
+3. Bus
+--------
+
+    O      O
+    |      |
+___________________________        Die Kommunikation läuft über ein gemeinsames Kabel
+        |           |
+        O           O
+
+
+4. Der Token-Ring
+-------------------
+
+      O-----O(TOKEN)
+     /       \---(Steuereinheit)
+    O         O                     Wer Token hat, hat das Recht zu senden. Wird reium weitergegeben.
+    \----O---O/                     Bei Verlust erstellt die Steuereinheit einen neuen Token.
+Kabel können auch um die Rechner rumgehen, dann hakts nicht gleich wenn ein Rechner ausfällt.
+
+5. WLAN
+--------
+
+    O---|-----------O     Logische Sternstruktur  (Zentraler Knoten)
+        O(Router)         aber
+    O---|-----------O     Physikalische BUS-Struktur
+                          (gemeinsames Übertragungsmedium)
