@@ -40,7 +40,7 @@ class TRANSFER{
 		zz = sign;
 	}
 
-}
+};
 class RECHNER{
 	public:
 		int state;
@@ -51,7 +51,9 @@ class RECHNER{
 		s = 0;
 		state = s;
 	}
-
+	void INIT() {
+		TRANSFER* TRANS = new TRANSFER(1, 2, 3);
+	}
 	void addTransfers(trans tr) {
 		transfers.push_back(tr);
 	}
@@ -62,8 +64,8 @@ class RECHNER{
 
 	void input (char c) {
 		for(const auto& trans: transfers) {
-			if(zustand == TRANSFER.getSP() && c == TRANSFER.getSIGN()) {
-				state = TRANSFER.getEP();
+			if(state == TRANS.getSP() && c == TRANS.getSIGN()) {
+				state = TRANS.getEP();
 				break;
 			}
 		}
@@ -85,5 +87,5 @@ class RECHNER{
 			cout << "String not accepted!" << endl;
 		}
 	}
-	}
-}
+    }
+};
