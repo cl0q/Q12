@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>~/mntpoint/extended/school/Q12/p-sem/V2.c.html</title>
+<meta name="Generator" content="Vim/9.0">
+<meta name="plugin-version" content="vim8.1_v2">
+<meta name="syntax" content="c">
+<meta name="settings" content="use_css,no_foldcolumn,pre_wrap,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="none">
+<style>
+<!--
+pre { white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+* { font-size: 0.9em; }
+.Special { color: #ffd7d7; }
+.Statement { color: #c6a0f6; }
+.PreProc { color: #5fd7ff; }
+.Type { color: #87ffaf; }
+.Comment { color: #a5adcb; }
+.Constant { color: #ed8796; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Comment">// © 2022 Oliver Ilczuk &lt;oliver@ilczuk.com&gt;</span>
+<span class="Comment">// MIT Lincense</span>
+
+
+<span class="Comment">// importing necessary libraries</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;string.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;stdio.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;ev3.h&quot;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;brick.h&quot;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;ev3_port.h&quot;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;ev3_sensor.h&quot;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;coroutine.h&quot;</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;unistd.h&gt;</span>
+
+<span class="Comment">// defining used ports and function</span>
+<span class="PreProc">#define _M_RIGHT	OUTD</span>
+<span class="PreProc">#define _M_LEFT		OUTA</span>
+<span class="PreProc">#define _M_BELT   	OUTB</span>
+<span class="PreProc">#define _M_MONEY  	OUTC</span>
+<span class="PreProc">#define COLOR_COUNT ((</span><span class="Type">int</span><span class="PreProc">)(</span><span class="Statement">sizeof</span><span class="PreProc">(color) / </span><span class="Statement">sizeof</span><span class="PreProc">(color[</span><span class="Constant">0</span><span class="PreProc">])))</span>
+
+<span class="Comment">// defining global variables</span>
+<span class="Type">int</span> rightLeft=<span class="Constant">0</span>;	 <span class="Comment">/*</span><span class="Comment">         0      1        2       3        4        5       6         7  </span><span class="Comment">*/</span>
+<span class="Type">const</span> <span class="Type">char</span> <span class="Type">const</span> *color[] = {<span class="Constant">&quot;?&quot;</span>, <span class="Constant">&quot;BLACK&quot;</span>, <span class="Constant">&quot;BLUE&quot;</span>, <span class="Constant">&quot;GREEN&quot;</span>, <span class="Constant">&quot;YELLOW&quot;</span>, <span class="Constant">&quot;RED&quot;</span>, <span class="Constant">&quot;WHITE&quot;</span>, <span class="Constant">&quot;BROWN&quot;</span>};
+<span class="Type">int</span> val, credits;
+
+<span class="Comment">// Initializes program, pulls back pushers to reset position, test runs _M_BELT and _M_MONEY</span>
+<span class="Type">int</span> init() {
+	printf(<span class="Constant">&quot;</span><span class="Special">\n\n</span><span class="Constant">&lt;&lt;&lt;---------BEGIN INIT--------&gt;&gt;&gt;</span><span class="Special">\n\n</span><span class="Constant">&quot;</span>);
+		<span class="Statement">if</span>( tacho_is_plugged ( _M_LEFT, TACHO_TYPE__NONE_ )) {
+			printf(<span class="Constant">&quot;FOUND _M_LEFT ON PORT_A</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+		}<span class="Statement">else</span> {
+			printf(<span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;CONNECT _M_LEFT TO PORT_A!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+			brick_uninit();
+			<span class="Statement">return</span> <span class="Constant">1</span>;
+	}
+
+	<span class="Statement">if</span> ( tacho_is_plugged ( _M_RIGHT, TACHO_TYPE__NONE_ )) {
+		printf(<span class="Constant">&quot;FOUND _M_RIGHT ON PORT_D</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+	}<span class="Statement">else</span> {
+		printf(<span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;CONNECT _M_RIGHT TO PORT_D!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+		brick_uninit();
+		<span class="Statement">return</span> <span class="Constant">1</span>;
+	}
+
+	<span class="Statement">if</span> ( tacho_is_plugged ( _M_BELT, TACHO_TYPE__NONE_ )) {
+		printf(<span class="Constant">&quot;FOUND _M_BELT ON PORT_B</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+	}<span class="Statement">else</span> {
+		printf(<span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;CONNECT _M_BELT TO PORT_B!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+		brick_uninit();
+		<span class="Statement">return</span> <span class="Constant">1</span>;
+	}
+
+	<span class="Statement">if</span> ( tacho_is_plugged ( _M_MONEY, TACHO_TYPE__NONE_ )) {
+		printf(<span class="Constant">&quot;FOUND _M_MONEY ON PORT_C</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+	}<span class="Statement">else</span> {
+		printf(<span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;CONNECT _M_MONEY TO PORT_C!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+		brick_uninit();
+		<span class="Statement">return</span> <span class="Constant">1</span>;
+	}
+
+	tacho_set_speed_sp( _M_RIGHT, -<span class="Constant">100</span> );
+	tacho_run_forever( _M_RIGHT );
+	sleep_ms( <span class="Constant">500</span> );
+	tacho_stop( _M_RIGHT );
+
+	tacho_set_speed_sp( _M_LEFT, -<span class="Constant">100</span> );
+	tacho_run_forever( _M_LEFT );
+	sleep_ms( <span class="Constant">500</span> );
+	tacho_stop( _M_LEFT );
+
+	tacho_set_speed_sp( _M_BELT, <span class="Constant">200</span> );
+	tacho_run_forever( _M_BELT );
+	sleep_ms( <span class="Constant">1000</span> );
+	tacho_stop( _M_BELT );
+
+	tacho_set_speed_sp( _M_MONEY, <span class="Constant">100</span> );
+	tacho_run_forever( _M_MONEY );
+	sleep_ms( <span class="Constant">100</span> );
+	tacho_set_speed_sp( _M_MONEY, -<span class="Constant">100</span> );
+	tacho_run_forever( _M_MONEY );
+	sleep_ms( <span class="Constant">100</span> );
+	tacho_stop( _M_MONEY );
+
+	printf(<span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">&gt;&gt;&gt;----------END INIT---------&lt;&lt;&lt;</span><span class="Special">\n\n</span><span class="Constant">&quot;</span>);
+
+	<span class="Statement">return</span> <span class="Constant">0</span>;
+}
+
+<span class="Comment">// cleaner way to print current credits</span>
+<span class="Type">void</span> getCredits() {
+	<span class="Statement">if</span>( credits != <span class="Constant">0</span>){
+    	printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;32m[CREDIT]</span><span class="Special">\033</span><span class="Constant">[0m     </span><span class="Special">%i</span><span class="Special">\n</span><span class="Constant">&quot;</span>, credits);
+	}<span class="Statement">else</span> <span class="Statement">if</span>( credits == <span class="Constant">0</span>){
+    	printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[CREDIT]</span><span class="Special">\033</span><span class="Constant">[0m     </span><span class="Special">%i</span><span class="Special">\n</span><span class="Constant">&quot;</span>, credits);
+	}
+}
+
+<span class="Comment">// method to select candy being pushed out, case 1 == right, case 2 == left</span>
+<span class="Type">void</span> selection( <span class="Type">int</span> rightLeft ) {
+		<span class="Statement">switch</span>( rightLeft ) {
+		<span class="Statement">case</span> <span class="Constant">1</span>:
+      	<span class="Comment">//_M_RIGHT</span>
+			tacho_set_speed_sp( _M_RIGHT, <span class="Constant">1000</span> );
+			tacho_run_forever( _M_RIGHT );
+			sleep_ms( <span class="Constant">2000</span> );
+			tacho_stop( _M_RIGHT );
+			sleep_ms( <span class="Constant">500</span> );
+			tacho_set_speed_sp( _M_RIGHT, -<span class="Constant">100</span> );
+			tacho_run_forever( _M_RIGHT );
+      	<span class="Comment">// _M_BELT</span>
+			tacho_set_speed_sp( _M_BELT, <span class="Constant">200</span> );
+			tacho_run_forever( _M_BELT );
+			sleep_ms( <span class="Constant">2000</span> );
+			tacho_stop( _M_BELT );
+
+			tacho_stop( _M_RIGHT );
+
+	    <span class="Statement">break</span>;
+
+		<span class="Statement">case</span> <span class="Constant">2</span>:
+		<span class="Comment">// _M_LEFT</span>
+			tacho_set_speed_sp( _M_LEFT, <span class="Constant">200</span> );
+			tacho_run_forever( _M_LEFT );
+			sleep_ms( <span class="Constant">2000</span> );
+			tacho_stop( _M_LEFT );
+			sleep_ms( <span class="Constant">500</span> );
+			tacho_set_speed_sp( _M_LEFT, -<span class="Constant">100</span> );
+			tacho_run_forever( _M_LEFT );
+			sleep_ms( <span class="Constant">500</span> );
+			tacho_stop( _M_LEFT );
+
+    	<span class="Statement">break</span>;
+	}
+}
+
+<span class="Comment">// finds connected sensor and reads color infront of color sensor</span>
+<span class="Type">void</span> getColor() {
+	<span class="Type">uint8_t</span> sn_colors;
+	<span class="Statement">if</span>( ev3_search_sensor ( LEGO_EV3_COLOR, &amp;sn_colors, <span class="Constant">0</span> ) == <span class="Constant">true</span>) {
+		set_sensor_mode( sn_colors, <span class="Constant">&quot;COL-COLOR&quot;</span> );
+		<span class="Statement">if</span>( !get_sensor_value ( <span class="Constant">0</span>, sn_colors, &amp;val ) || ( val &lt; <span class="Constant">0</span> ) || ( val &gt;= COLOR_COUNT )) {
+			val = <span class="Constant">0</span>;
+		}
+	}
+}
+
+<span class="Comment">// runs _M_MONEY to retrieve given change</span>
+<span class="Type">void</span> motorMoney() {
+	tacho_set_speed_sp( _M_MONEY, -<span class="Constant">175</span> );
+	tacho_run_forever( _M_MONEY );
+	sleep_ms( <span class="Constant">1000</span> );
+	tacho_stop( _M_MONEY );
+	sleep_ms( <span class="Constant">500</span> );
+	tacho_set_speed_sp( _M_MONEY, <span class="Constant">175</span> );
+	tacho_run_forever( _M_MONEY );
+	sleep_ms( <span class="Constant">500</span> );
+	tacho_stop( _M_MONEY );
+}
+
+<span class="Comment">// sets credits according to given change</span>
+<span class="Type">void</span> setCredits() {
+	<span class="Comment">//1 Euro, red, brown</span>
+	<span class="Statement">if</span>( val == <span class="Constant">5</span> || val == <span class="Constant">7</span> ) {
+    	credits++;
+    	printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;36m[STATS ]</span><span class="Special">\033</span><span class="Constant">[0m     Change: 1 Euro  ||  Color: </span><span class="Special">%s</span><span class="Special">\n</span><span class="Constant">&quot;</span>, color[val]);
+    	getCredits();
+    	motorMoney();
+	<span class="Comment">//2 Euro, yellow, blue</span>
+	} <span class="Statement">else</span> <span class="Statement">if</span>( val == <span class="Constant">4</span> || val == <span class="Constant">2</span> ){
+    	credits = credits + <span class="Constant">2</span>;
+    	printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;36m[STATS ]</span><span class="Special">\033</span><span class="Constant">[0m     Change: 2 Euro  ||  Color: </span><span class="Special">%s</span><span class="Special">\n</span><span class="Constant">&quot;</span>, color[val]);
+    	getCredits();
+    	motorMoney();
+	} <span class="Statement">else</span>{
+    	printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[  !!  ]</span><span class="Special">\033</span><span class="Constant">[0m     Could NOT determine change!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+    	getCredits();
+	}
+}
+
+<span class="Comment">// coroutine to always check for key inputs</span>
+CORO_CONTEXT( handle_brick_control );
+CORO_DEFINE( handle_brick_control ) {
+	CORO_LOCAL <span class="Type">uint8_t</span> keys, pressed = EV3_KEY__NONE_;
+
+	CORO_BEGIN();
+	<span class="Statement">for</span>( ; ; ) {
+		CORO_WAIT(( keys = brick_keys()) != pressed );
+		pressed = keys;
+		<span class="Comment">// if enough credits, push out candy, else throw error</span>
+		<span class="Statement">switch</span>( pressed ) {
+			<span class="Statement">case</span> EV3_KEY_LEFT:
+				<span class="Statement">if</span>( credits &gt;= <span class="Constant">1</span> ){
+					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;33m[ACTION]</span><span class="Special">\033</span><span class="Constant">[0m     left</span><span class="Special">\n</span><span class="Constant">&quot;</span> );
+					selection( <span class="Constant">2</span> );
+					credits--;
+					getCredits();
+        		} <span class="Statement">else</span>{
+					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[ERROR ]</span><span class="Special">\033</span><span class="Constant">[0m     NOT ENOUGH CREDITS</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+					getCredits();
+        		}
+				<span class="Statement">break</span>;
+			<span class="Statement">case</span> EV3_KEY_RIGHT:
+        		<span class="Statement">if</span>( credits &gt;= <span class="Constant">2</span>){
+					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;33m[ACTION]</span><span class="Special">\033</span><span class="Constant">[0m     right</span><span class="Special">\n</span><span class="Constant">&quot;</span> );
+					selection( <span class="Constant">1</span> );
+					credits = credits - <span class="Constant">2</span>;
+					getCredits();
+        		} <span class="Statement">else</span>{
+					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[ERROR ]</span><span class="Special">\033</span><span class="Constant">[0m     NOT ENOUGH CREDITS</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+					getCredits();
+        }
+        <span class="Statement">break</span>;
+			<span class="Statement">case</span> EV3_KEY_CENTER:
+				printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;35m[ GIVE ]</span><span class="Special">\033</span><span class="Constant">[0m</span><span class="Special">\n</span><span class="Constant">&quot;</span> );
+				getColor();
+				setCredits();
+				<span class="Statement">break</span>;
+		}
+		CORO_YIELD();
+	}
+CORO_END();
+}
+
+<span class="Type">int</span> main() {
+	brick_init();
+	init();
+	getColor();
+	<span class="Statement">for</span>( ; ; ){
+		CORO_CALL( handle_brick_control );
+	}
+	<span class="Statement">return</span> <span class="Constant">0</span>;
+}
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

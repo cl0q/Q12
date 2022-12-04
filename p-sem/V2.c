@@ -90,17 +90,17 @@ int init() {
 // cleaner way to print current credits
 void getCredits() {
 	if( credits != 0){
-    	printf( "\033[0;32m[CREDIT]\033[0m     %i\n", credits);
+		printf( "\033[0;32m[CREDIT]\033[0m     %i\n", credits);
 	}else if( credits == 0){
-    	printf( "\033[0;31m[CREDIT]\033[0m     %i\n", credits);
+		printf( "\033[0;31m[CREDIT]\033[0m     %i\n", credits);
 	}
 }
 
 // method to select candy being pushed out, case 1 == right, case 2 == left
 void selection( int rightLeft ) {
-		switch( rightLeft ) {
+	switch( rightLeft ) {
 		case 1:
-      	//_M_RIGHT
+      //_M_RIGHT
 			tacho_set_speed_sp( _M_RIGHT, 1000 );
 			tacho_run_forever( _M_RIGHT );
 			sleep_ms( 2000 );
@@ -108,18 +108,17 @@ void selection( int rightLeft ) {
 			sleep_ms( 500 );
 			tacho_set_speed_sp( _M_RIGHT, -100 );
 			tacho_run_forever( _M_RIGHT );
-      	// _M_BELT
+      // _M_BELT
 			tacho_set_speed_sp( _M_BELT, 200 );
 			tacho_run_forever( _M_BELT );
 			sleep_ms( 2000 );
 			tacho_stop( _M_BELT );
 
 			tacho_stop( _M_RIGHT );
-
-	    break;
+			break;
 
 		case 2:
-		// _M_LEFT
+			// _M_LEFT
 			tacho_set_speed_sp( _M_LEFT, 200 );
 			tacho_run_forever( _M_LEFT );
 			sleep_ms( 2000 );
@@ -130,7 +129,7 @@ void selection( int rightLeft ) {
 			sleep_ms( 500 );
 			tacho_stop( _M_LEFT );
 
-    	break;
+			break;
 	}
 }
 
@@ -162,19 +161,19 @@ void motorMoney() {
 void setCredits() {
 	//1 Euro, red, brown
 	if( val == 5 || val == 7 ) {
-    	credits++;
-    	printf("\033[0;36m[STATS ]\033[0m     Change: 1 Euro  ||  Color: %s\n", color[val]);
-    	getCredits();
-    	motorMoney();
+		credits++;
+		printf("\033[0;36m[STATS ]\033[0m     Change: 1 Euro  ||  Color: %s\n", color[val]);
+    getCredits();
+    motorMoney();
 	//2 Euro, yellow, blue
 	} else if( val == 4 || val == 2 ){
-    	credits = credits + 2;
-    	printf("\033[0;36m[STATS ]\033[0m     Change: 2 Euro  ||  Color: %s\n", color[val]);
-    	getCredits();
-    	motorMoney();
+    credits = credits + 2;
+    printf("\033[0;36m[STATS ]\033[0m     Change: 2 Euro  ||  Color: %s\n", color[val]);
+    getCredits();
+    motorMoney();
 	} else{
-    	printf("\033[0;31m[  !!  ]\033[0m     Could NOT determine change!\n");
-    	getCredits();
+    printf("\033[0;31m[  !!  ]\033[0m     Could NOT determine change!\n");
+    getCredits();
 	}
 }
 
@@ -195,18 +194,18 @@ CORO_DEFINE( handle_brick_control ) {
 					selection( 2 );
 					credits--;
 					getCredits();
-        		} else{
+				} else{
 					printf( "%s", "\033[0;31m[ERROR ]\033[0m     NOT ENOUGH CREDITS\n");
 					getCredits();
-        		}
+        }
 				break;
 			case EV3_KEY_RIGHT:
-        		if( credits >= 2){
+        if( credits >= 2){
 					printf( "%s", "\033[0;33m[ACTION]\033[0m     right\n" );
 					selection( 1 );
 					credits = credits - 2;
 					getCredits();
-        		} else{
+        } else{
 					printf( "%s", "\033[0;31m[ERROR ]\033[0m     NOT ENOUGH CREDITS\n");
 					getCredits();
         }
