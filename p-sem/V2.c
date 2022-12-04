@@ -15,8 +15,8 @@
 // defining used ports and function
 #define _M_RIGHT	OUTD
 #define _M_LEFT		OUTA
-#define _M_BELT   	OUTB
-#define _M_MONEY  	OUTC
+#define _M_BELT   OUTB
+#define _M_MONEY  OUTC
 #define COLOR_COUNT ((int)(sizeof(color) / sizeof(color[0])))
 
 // defining global variables

@@ -10,15 +10,15 @@
 <meta name="colorscheme" content="none">
 <style>
 <!--
-pre { white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #ffffff; background-color: #000000; }
+pre { white-space: pre-wrap; font-family: 'Fira Code Mono', monospace; color: #ffffff; background-color: #000000; }
 body { font-family: monospace; color: #ffffff; background-color: #000000; }
-* { font-size: 0.9em; }
+* { font-size: 1em; }
 .Special { color: #ffd7d7; }
-.Statement { color: #c6a0f6; }
+.Statement { color: #ffff00; }
 .PreProc { color: #5fd7ff; }
 .Type { color: #87ffaf; }
-.Comment { color: #a5adcb; }
-.Constant { color: #ed8796; }
+.Comment { color: #00ffff; }
+.Constant { color: #ff40ff; }
 -->
 </style>
 </head>
@@ -116,17 +116,17 @@ body { font-family: monospace; color: #ffffff; background-color: #000000; }
 <span class="Comment">// cleaner way to print current credits</span>
 <span class="Type">void</span> getCredits() {
 	<span class="Statement">if</span>( credits != <span class="Constant">0</span>){
-    	printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;32m[CREDIT]</span><span class="Special">\033</span><span class="Constant">[0m     </span><span class="Special">%i</span><span class="Special">\n</span><span class="Constant">&quot;</span>, credits);
+		printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;32m[CREDIT]</span><span class="Special">\033</span><span class="Constant">[0m     </span><span class="Special">%i</span><span class="Special">\n</span><span class="Constant">&quot;</span>, credits);
 	}<span class="Statement">else</span> <span class="Statement">if</span>( credits == <span class="Constant">0</span>){
-    	printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[CREDIT]</span><span class="Special">\033</span><span class="Constant">[0m     </span><span class="Special">%i</span><span class="Special">\n</span><span class="Constant">&quot;</span>, credits);
+		printf( <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[CREDIT]</span><span class="Special">\033</span><span class="Constant">[0m     </span><span class="Special">%i</span><span class="Special">\n</span><span class="Constant">&quot;</span>, credits);
 	}
 }
 
 <span class="Comment">// method to select candy being pushed out, case 1 == right, case 2 == left</span>
 <span class="Type">void</span> selection( <span class="Type">int</span> rightLeft ) {
-		<span class="Statement">switch</span>( rightLeft ) {
+	<span class="Statement">switch</span>( rightLeft ) {
 		<span class="Statement">case</span> <span class="Constant">1</span>:
-      	<span class="Comment">//_M_RIGHT</span>
+      <span class="Comment">//_M_RIGHT</span>
 			tacho_set_speed_sp( _M_RIGHT, <span class="Constant">1000</span> );
 			tacho_run_forever( _M_RIGHT );
 			sleep_ms( <span class="Constant">2000</span> );
@@ -134,18 +134,17 @@ body { font-family: monospace; color: #ffffff; background-color: #000000; }
 			sleep_ms( <span class="Constant">500</span> );
 			tacho_set_speed_sp( _M_RIGHT, -<span class="Constant">100</span> );
 			tacho_run_forever( _M_RIGHT );
-      	<span class="Comment">// _M_BELT</span>
+      <span class="Comment">// _M_BELT</span>
 			tacho_set_speed_sp( _M_BELT, <span class="Constant">200</span> );
 			tacho_run_forever( _M_BELT );
 			sleep_ms( <span class="Constant">2000</span> );
 			tacho_stop( _M_BELT );
 
 			tacho_stop( _M_RIGHT );
-
-	    <span class="Statement">break</span>;
+			<span class="Statement">break</span>;
 
 		<span class="Statement">case</span> <span class="Constant">2</span>:
-		<span class="Comment">// _M_LEFT</span>
+			<span class="Comment">// _M_LEFT</span>
 			tacho_set_speed_sp( _M_LEFT, <span class="Constant">200</span> );
 			tacho_run_forever( _M_LEFT );
 			sleep_ms( <span class="Constant">2000</span> );
@@ -156,7 +155,7 @@ body { font-family: monospace; color: #ffffff; background-color: #000000; }
 			sleep_ms( <span class="Constant">500</span> );
 			tacho_stop( _M_LEFT );
 
-    	<span class="Statement">break</span>;
+			<span class="Statement">break</span>;
 	}
 }
 
@@ -188,19 +187,19 @@ body { font-family: monospace; color: #ffffff; background-color: #000000; }
 <span class="Type">void</span> setCredits() {
 	<span class="Comment">//1 Euro, red, brown</span>
 	<span class="Statement">if</span>( val == <span class="Constant">5</span> || val == <span class="Constant">7</span> ) {
-    	credits++;
-    	printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;36m[STATS ]</span><span class="Special">\033</span><span class="Constant">[0m     Change: 1 Euro  ||  Color: </span><span class="Special">%s</span><span class="Special">\n</span><span class="Constant">&quot;</span>, color[val]);
-    	getCredits();
-    	motorMoney();
+		credits++;
+		printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;36m[STATS ]</span><span class="Special">\033</span><span class="Constant">[0m     Change: 1 Euro  ||  Color: </span><span class="Special">%s</span><span class="Special">\n</span><span class="Constant">&quot;</span>, color[val]);
+    getCredits();
+    motorMoney();
 	<span class="Comment">//2 Euro, yellow, blue</span>
 	} <span class="Statement">else</span> <span class="Statement">if</span>( val == <span class="Constant">4</span> || val == <span class="Constant">2</span> ){
-    	credits = credits + <span class="Constant">2</span>;
-    	printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;36m[STATS ]</span><span class="Special">\033</span><span class="Constant">[0m     Change: 2 Euro  ||  Color: </span><span class="Special">%s</span><span class="Special">\n</span><span class="Constant">&quot;</span>, color[val]);
-    	getCredits();
-    	motorMoney();
+    credits = credits + <span class="Constant">2</span>;
+    printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;36m[STATS ]</span><span class="Special">\033</span><span class="Constant">[0m     Change: 2 Euro  ||  Color: </span><span class="Special">%s</span><span class="Special">\n</span><span class="Constant">&quot;</span>, color[val]);
+    getCredits();
+    motorMoney();
 	} <span class="Statement">else</span>{
-    	printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[  !!  ]</span><span class="Special">\033</span><span class="Constant">[0m     Could NOT determine change!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
-    	getCredits();
+    printf(<span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[  !!  ]</span><span class="Special">\033</span><span class="Constant">[0m     Could NOT determine change!</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
+    getCredits();
 	}
 }
 
@@ -221,18 +220,18 @@ CORO_DEFINE( handle_brick_control ) {
 					selection( <span class="Constant">2</span> );
 					credits--;
 					getCredits();
-        		} <span class="Statement">else</span>{
+				} <span class="Statement">else</span>{
 					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[ERROR ]</span><span class="Special">\033</span><span class="Constant">[0m     NOT ENOUGH CREDITS</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
 					getCredits();
-        		}
+        }
 				<span class="Statement">break</span>;
 			<span class="Statement">case</span> EV3_KEY_RIGHT:
-        		<span class="Statement">if</span>( credits &gt;= <span class="Constant">2</span>){
+        <span class="Statement">if</span>( credits &gt;= <span class="Constant">2</span>){
 					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;33m[ACTION]</span><span class="Special">\033</span><span class="Constant">[0m     right</span><span class="Special">\n</span><span class="Constant">&quot;</span> );
 					selection( <span class="Constant">1</span> );
 					credits = credits - <span class="Constant">2</span>;
 					getCredits();
-        		} <span class="Statement">else</span>{
+        } <span class="Statement">else</span>{
 					printf( <span class="Constant">&quot;</span><span class="Special">%s</span><span class="Constant">&quot;</span>, <span class="Constant">&quot;</span><span class="Special">\033</span><span class="Constant">[0;31m[ERROR ]</span><span class="Special">\033</span><span class="Constant">[0m     NOT ENOUGH CREDITS</span><span class="Special">\n</span><span class="Constant">&quot;</span>);
 					getCredits();
         }
