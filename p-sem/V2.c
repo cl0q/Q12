@@ -1,4 +1,6 @@
+// © 2022 Timo Katzenberger <katzenbergertimo@gmail.com> &&
 // © 2022 Oliver Ilczuk <oliver@ilczuk.com>
+
 // MIT Lincense
 
 
